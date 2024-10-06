@@ -1,1 +1,0 @@
-This folder will contain all the work that has been done from Week 1 to Week 4
