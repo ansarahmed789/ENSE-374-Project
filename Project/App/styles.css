@@ -94,3 +94,9 @@ a:hover {
 .logo_in{
   margin-top: 10px;
 }
+.fixed-bottom-button {
+  position: fixed;
+  bottom: 20px;
+  right: 74%;
+  z-index: 1000; /* Ensure it appears above other elements */
+}
