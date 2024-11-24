@@ -36,15 +36,13 @@
             <a class="nav-link" href="/Project MediLocate/public/pages/About.html">About</a>
           </li>
           <li class="nav-item">
-            <!-- <a class="nav-link" href="#">Career</a> -->
-          </li>
-          <li class="nav-item">
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=medilocate@gmail.com" target="_blank" class="nav-link">Contact us</a>
-
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=medilocate@gmail.com" target="_blank"
+              class="nav-link">Contact us</a>
           </li>
         </ul>
         <div class="dropdown">
-          <a href="#" class="btn btn-outline-primary ms-3 dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a href="#" class="btn btn-outline-primary ms-3 dropdown-toggle" id="userDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
             <!-- Placeholder for logged in user -->
             <span id="loggedInUser">User</span>
           </a>
@@ -64,7 +62,7 @@
       <div class="input-group mb-3 w-50 mx-auto position-relative">
         <input type="text" class="form-control" id="cityInput" placeholder="Enter your City" aria-label="Enter your City" oninput="showSuggestions()">
         <div id="suggestions" class="dropdown-menu w-100" style="position: absolute; top: 100%; left: 0; z-index: 1000;"></div>
-        <button class="btn btn-primary" type="button">Find Clinics</button>
+        <button class="btn btn-primary" type="button" onclick="window.location.href='clinics.html'">Find Clinics</button>
       </div>
     </div>
   </section>
@@ -94,7 +92,11 @@
   <section class="description-section text-center py-5">
     <div class="container">
       <h2 class="display-5 fw-bold">Transforming Healthcare Access</h2>
-      <p class="lead mt-4">MediLocate is here to revolutionize the way you connect with healthcare. Our platform bridges the gap between patients and clinics, ensuring that you can easily find, book, and manage your appointments without any hassle. Whether you need a specialist or a family doctor, MediLocate empowers you to take control of your healthcare journey with just a few clicks. Say goodbye to long waiting times and frustrating searches, and hello to instant access to the care you need.</p>
+      <p class="lead mt-4">MediLocate is here to revolutionize the way you connect with healthcare. Our platform bridges
+        the gap between patients and clinics, ensuring that you can easily find, book, and manage your appointments
+        without any hassle. Whether you need a specialist or a family doctor, MediLocate empowers you to take control of
+        your healthcare journey with just a few clicks. Say goodbye to long waiting times and frustrating searches, and
+        hello to instant access to the care you need.</p>
     </div>
   </section>
 
@@ -107,13 +109,8 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
   <script src="/Project MediLocate/public/js/script.js"></script>
-  <script>
-    function logout() {
-      // Add logic to handle user logout here
-      alert("You have been logged out.");
-    }
-  </script>
 </body>
 
 </html>
