@@ -38,6 +38,10 @@ app.get("/SignupMedical", (req, res) => {
     console.log("User authenticated, serving the Home page");
 });
 
+app.get("/About", (req, res) => {
+    res.sendFile(__dirname + "/public/pages/About.html"); // Serve About page
+    console.log("User authenticated, serving the About page");
+});
 
 // Use routes from userController
 app.use("/", userRoutes);

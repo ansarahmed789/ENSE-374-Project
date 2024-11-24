@@ -2,6 +2,7 @@
     {
         "name": "Medilocate",
         "username": "a@a.a",
-        "password": "aPassword"
+        "password": "aPassword",
+        "medicalid": "1"
     }
 ]
