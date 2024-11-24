@@ -39,4 +39,31 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
+  document.addEventListener('DOMContentLoaded', function () {
+    const cityInput = document.getElementById('cityInput');
+    const findClinicsButton = document.querySelector('button[type="button"]');
+
+    findClinicsButton.addEventListener('click', function () {
+        const selectedCity = cityInput.value.trim();
+        if (selectedCity) {
+            window.location.href = `clinics.html?city=${selectedCity}`;
+        } else {
+            alert('Please enter a city.');
+        }
+    });
+});
+function redirectToCity() {
+    const city = document.getElementById('cityInput').value.trim().toLowerCase();
+
+    if (city === 'regina') {
+        window.location.href = 'Regina.html';
+    } else if (city === 'moose jaw') {
+        window.location.href = 'MJ.html';
+    } else if (city === 'saskatoon') {
+        window.location.href = 'Saskatoon.html';
+    } else {
+        alert("Please enter a valid city: Regina, Moose Jaw, or Saskatoon.");
+    }
+}
+
   
