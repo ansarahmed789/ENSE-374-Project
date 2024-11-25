@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediLocate - Home</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+  <!-- Header Section -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center mx-auto" href="#">
+        <!-- Logo Placeholder -->
+        <img src="/images/image.png" alt="MediLocate Logo" class="logo me-3">
+        <span class="display-5 fw-bold text-primary">MediLocate</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="/Home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">My Appointments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/About">About</a>
+          </li>
+          <li class="nav-item">
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=medilocate@gmail.com" target="_blank" class="nav-link">Contact us</a>
+          </li>
+        </ul>
+        <div class="dropdown">
+          <a href="#" class="btn btn-outline-primary ms-3 dropdown-toggle" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span id="loggedInUser">User</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-center">
+    <div class="container">
+      <h1 class="display-4">Find Your Clinic, Anytime, Anywhere</h1>
+      <p class="lead">Healthcare at your fingertips. Empowering You with Convenient Healthcare Access.</p>
+      <div class="input-group mb-3 w-50 mx-auto position-relative">
+        <input type="text" class="form-control" id="cityInput" placeholder="Enter your City" aria-label="Enter your City" oninput="showSuggestions()">
+        <div id="suggestions" class="dropdown-menu w-100" style="position: absolute; top: 100%; left: 0; z-index: 1000;"></div>
+        <button class="btn btn-primary" type="button" onclick="redirectToCity()">Find Clinics</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section py-5">
+    <div class="container text-center">
+      <h1 class="display-">Taking the Hassle Out of Healthcare</h1>
+      <div class="row">
+        <div class="col-md-4">
+          <h2>1 in 5 Canadians</h2>
+          <p>Do not have a family doctor</p>
+        </div>
+        <div class="col-md-4">
+          <h2>Only 43%</h2>
+          <p>Canadians can see their family doctors the same or next day.</p>
+        </div>
+        <div class="col-md-4">
+          <h2>25.6 weeks</h2>
+          <p>Of average wait time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Description Section -->
+  <section class="description-section text-center py-5">
+    <div class="container">
+      <h2 class="display-5 fw-bold">Transforming Healthcare Access</h2>
+      <p class="lead mt-4">MediLocate is here to revolutionize the way you connect with healthcare. Our platform bridges the gap between patients and clinics, ensuring that you can easily find, book, and manage your appointments without any hassle. Whether you need a specialist or a family doctor, MediLocate empowers you to take control of your healthcare journey with just a few clicks. Say goodbye to long waiting times and frustrating searches, and hello to instant access to the care you need.</p>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer bg-light py-4">
+    <div class="container text-center">
+      <p class="mb-0">&copy; 2024 MediLocate. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap" async defer></script>
+  <!-- <script src="/js/script.js"></script> -->
+</body>
+
+</html>
+<!-- javascript for having a dynamic dorpdown menu -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const cities = ["Regina", "Moose Jaw", "Saskatoon"];
+    const cityInput = document.getElementById("cityInput");
+    const suggestions = document.getElementById("suggestions");
+  
+    cityInput.addEventListener("input", function () {
+      const inputValue = cityInput.value.toLowerCase();
+      suggestions.innerHTML = "";
+  
+      if (inputValue.length > 0) {
+        const filteredCities = cities.filter((city) =>
+          city.toLowerCase().startsWith(inputValue)
+        );
+  
+        if (filteredCities.length > 0) {
+          filteredCities.forEach((city) => {
+            const suggestionItem = document.createElement("div");
+            suggestionItem.classList.add("dropdown-item");
+            suggestionItem.textContent = city;
+            suggestionItem.addEventListener("click", function () {
+              cityInput.value = city;
+              suggestions.innerHTML = "";
+            });
+            suggestions.appendChild(suggestionItem);
+          });
+  
+          suggestions.classList.add("show");
+        } else {
+          suggestions.classList.remove("show");
+        }
+      } else {
+        suggestions.classList.remove("show");
+      }
+    });
+  
+    document.addEventListener("click", function (event) {
+      if (event.target !== cityInput) {
+        suggestions.classList.remove("show");
+      }
+    });
+
+    // Other functions like `redirectToCity()` can be added here too
+    // function redirectToCity() {
+    //   const cityInput = document.getElementById("cityInput");
+    //   const city = cityInput.value.toLowerCase().trim();
+  
+    //   if (city) {
+    //     window.location.href = `/results?city=${encodeURIComponent(city)}`;
+    //   } else {
+    //     alert("Please enter a valid city name.");
+    //   }
+    // }
+    function redirectToCity() {
+    const city = document.getElementById("cityInput").value.trim().toLowerCase();
+
+    if (city === "regina") {
+        window.location.href = "/regina";
+    } else if (city === "moose jaw") {
+        window.location.href = "/moose-jaw";
+    } else if (city === "saskatoon") {
+        window.location.href = "/saskatoon";
+    } else {
+        alert("Please enter a valid city: Regina, Moose Jaw, or Saskatoon.");
+    }
+}
+
+    // Assign the function to the Find Clinics button
+    const findClinicsButton = document.querySelector('button[type="button"]');
+    findClinicsButton.addEventListener('click', redirectToCity);
+  });
+</script>
