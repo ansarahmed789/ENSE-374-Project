@@ -2,10 +2,19 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+const userRoutes = require("./Controller/userController");
+
+const mongoose = require( "mongoose" );
+// connect to mongoose on port 27017
+mongoose.connect( "mongodb://localhost:27017/medilocate", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("MongoDB connection error:", err));
+
 app.set('view engine', 'ejs');
 
-// Import userController
-const userRoutes = require("./Controller/userController");
 
 // Middleware to parse JSON and serve static files
 app.use(express.json());
@@ -17,26 +26,26 @@ app.get("/", (req, res) => {
     res.redirect("/Login"); // Redirect to the login page
 });
 
-const clinicsData = {
-    regina: [
-      "Meadow Primary Health Care Center - 4006 Dewdney Avenue",
-      "Victoria East Medical Clinic - 2068 Prince of Wales Dr",
-      "Northgate Medical Clinic - 5885 Rochdale Blvd",
-      "South End Medical Clinic - 3400 Partridge Crescent"
-    ],
-    saskatoon: [
-      "Lakeside Medical Clinic - 215 Joseph Okemasis Dr",
-      "Saskatoon Health Center - 123 Central Ave",
-      "Broadway Health Clinic - 987 Broadway Ave",
-      "Stonebridge Medical Center - 456 Stonebridge Blvd"
-    ],
-    MooseJaw: [
-      "Alliance Health Medical Center - 890-A Lillooet St W",
-      "Hillcrest Medical Clinic - 200 Hill St",
-      "Prairie Sky Medical Center - 45 Main St",
-      "Heritage Medical Clinic - 67 Heritage Dr"
-    ]
-  };
+// const clinicsData = {
+//     regina: [
+//       "Meadow Primary Health Care Center - 4006 Dewdney Avenue",
+//       "Victoria East Medical Clinic - 2068 Prince of Wales Dr",
+//       "Northgate Medical Clinic - 5885 Rochdale Blvd",
+//       "South End Medical Clinic - 3400 Partridge Crescent"
+//     ],
+//     saskatoon: [
+//       "Lakeside Medical Clinic - 215 Joseph Okemasis Dr",
+//       "Saskatoon Health Center - 123 Central Ave",
+//       "Broadway Health Clinic - 987 Broadway Ave",
+//       "Stonebridge Medical Center - 456 Stonebridge Blvd"
+//     ],
+//     MooseJaw: [
+//       "Alliance Health Medical Center - 890-A Lillooet St W",
+//       "Hillcrest Medical Clinic - 200 Hill St",
+//       "Prairie Sky Medical Center - 45 Main St",
+//       "Heritage Medical Clinic - 67 Heritage Dr"
+//     ]
+//   };
   
   app.get("/results", (req, res) => {
     const city = req.query.city.toLowerCase();

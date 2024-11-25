@@ -1,6 +1,8 @@
 const fs = require("fs");
 const express = require("express");
 const router = express.Router();
+const User  = require("../Model/userModel.js");
+
 
 // POST route to handle login
 router.post("/Login", (req, res) => {
@@ -8,7 +10,7 @@ router.post("/Login", (req, res) => {
     const { username, password } = req.body;
 
     // Read the users.json file
-    fs.readFile(__dirname + "/../users.json", "utf8", (err, jsonString) => {
+    fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
         if (err) {
             console.error("Error reading file from disk:", err);
             return res.status(500).send("Server error");
@@ -31,44 +33,26 @@ router.post("/Login", (req, res) => {
 });
 
 // POST route to handle signup
-router.post("/Signup", (req, res) => {
-    console.log(req.body); // Debugging: Log request body
-    const { name, username, password } = req.body;
+router.post("/Signup", async (req, res) => {
+    try {
+        const { name, username, password } = req.body;
 
-    // Read the users.json file
-    fs.readFile(__dirname + "/../users.json", "utf8", (err, jsonString) => {
-        if (err) {
-            console.error("Error reading file from disk:", err);
-            return res.status(500).send("Server error");
+        // Check if the user already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).send("User already exists. Please log in.");
         }
 
-        try {
-            const users = JSON.parse(jsonString);
+        // Create a new user
+        const newUser = new User({ name, username, password });
+        await newUser.save();
+        console.log("New user created:", newUser);
 
-            // Check if user already exists
-            const userExists = users.find((u) => u.username === username);
-            if (userExists) {
-                return res.status(400).send("User already exists. Please log in.");
-            }
-
-            // Add new user to the users array
-            const newUser = { name, username, password };
-            users.push(newUser);
-
-            // Write the updated users array back to the file
-            fs.writeFile(__dirname + "/../users.json", JSON.stringify(users, null, 2), (writeErr) => {
-                if (writeErr) {
-                    console.error("Error writing file to disk:", writeErr);
-                    return res.status(500).send("Server error");
-                }
-
-                res.redirect("/Home"); // Redirect to the home page
-            });
-        } catch (parseErr) {
-            console.error("Error parsing JSON:", parseErr);
-            res.status(500).send("Server error");
-        }
-    });
+        res.redirect("/Home");
+    } catch (err) {
+        console.error("Error during signup:", err);
+        res.status(500).send("Server error");
+    }
 });
 
 router.post("/SignupMedical", (req, res) => {
@@ -76,7 +60,7 @@ router.post("/SignupMedical", (req, res) => {
     const { name, username, password, medicalid } = req.body;
 
     // Read the users.json file
-    fs.readFile(__dirname + "/../users.json", "utf8", (err, jsonString) => {
+    fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
         if (err) {
             console.error("Error reading file from disk:", err);
             return res.status(500).send("Server error");
@@ -96,7 +80,7 @@ router.post("/SignupMedical", (req, res) => {
             users.push(newUser);
 
             // Write the updated users array back to the file
-            fs.writeFile(__dirname + "/../users.json", JSON.stringify(users, null, 2), (writeErr) => {
+            fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), (writeErr) => {
                 if (writeErr) {
                     console.error("Error writing file to disk:", writeErr);
                     return res.status(500).send("Server error");
