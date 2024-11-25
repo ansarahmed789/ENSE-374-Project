@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+app.set('view engine', 'ejs');
+
 // Import userController
 const userRoutes = require("./Controller/userController");
 
@@ -56,7 +58,7 @@ app.get("/Signup", (req, res) => {
 
 // Route for home page
 app.get("/Home", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/home.html"); // Serve Home page
+    res.render("home"); // Serve home.ejs
     console.log("User authenticated, serving the Home page");
 });
 

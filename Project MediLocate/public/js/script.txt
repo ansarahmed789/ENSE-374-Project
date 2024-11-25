@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Function to redirect to the results page based on the city input
 function redirectToCity() {
-  const cityInput = document.getElementById("cityInput");
+  const cityInput = document.getElementById("cities");
   const city = cityInput.value.toLowerCase().trim();
 
   if (city) {
