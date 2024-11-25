@@ -72,6 +72,21 @@ app.get("/About", (req, res) => {
     console.log("User authenticated, serving the About page");
 });
 
+// Route for Regina page
+app.get("/regina", (req, res) => {
+    res.render("Regina"); // Renders Regina.ejs
+});
+
+// Route for Moose Jaw page
+app.get("/moose-jaw", (req, res) => {
+    res.render("MJ"); // Renders MJ.ejs
+});
+
+// Route for Saskatoon page
+app.get("/saskatoon", (req, res) => {
+    res.render("Saskatoon"); // Renders Saskatoon.ejs
+});
+
 // Use routes from userController
 app.use("/", userRoutes);
 
