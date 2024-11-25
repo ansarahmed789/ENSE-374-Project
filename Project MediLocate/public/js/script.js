@@ -52,21 +52,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+// Function to redirect to the results page based on the city input
 function redirectToCity() {
-    const city = document.getElementById('cityInput').value.trim().toLowerCase();
+  const cityInput = document.getElementById("cityInput");
+  const city = cityInput.value.toLowerCase().trim();
 
-// Map city names to their respective pages
-    const cityRoutes = {
-        "Regina": "/Regina",
-        "Saskatoon": "/Saskatoon",
-        "Moose jaw": "/MooseJaw"
-    };
-
-    if (cityRoutes[city]) {
-        window.location.href = cityRoutes[city]; // Redirect to the respective clinic page
-    } else {
-        alert("City not found. Please select Regina, Saskatoon, or Moose Jaw.");
-    }
+  if (city) {
+    // Redirect to the results route with the city as a query parameter
+    window.location.href = `/results?city=${encodeURIComponent(city)}`;
+  } else {
+    alert("Please enter a valid city name.");
+  }
 }
 
+// Example logout function (if needed)
+function logout() {
+  // Redirect the user to the login page or perform logout logic
+  window.location.href = "/Login";
+}
   

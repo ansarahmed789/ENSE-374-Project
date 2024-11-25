@@ -15,6 +15,33 @@ app.get("/", (req, res) => {
     res.redirect("/Login"); // Redirect to the login page
 });
 
+const clinicsData = {
+    regina: [
+      "Meadow Primary Health Care Center - 4006 Dewdney Avenue",
+      "Victoria East Medical Clinic - 2068 Prince of Wales Dr",
+      "Northgate Medical Clinic - 5885 Rochdale Blvd",
+      "South End Medical Clinic - 3400 Partridge Crescent"
+    ],
+    saskatoon: [
+      "Lakeside Medical Clinic - 215 Joseph Okemasis Dr",
+      "Saskatoon Health Center - 123 Central Ave",
+      "Broadway Health Clinic - 987 Broadway Ave",
+      "Stonebridge Medical Center - 456 Stonebridge Blvd"
+    ],
+    MooseJaw: [
+      "Alliance Health Medical Center - 890-A Lillooet St W",
+      "Hillcrest Medical Clinic - 200 Hill St",
+      "Prairie Sky Medical Center - 45 Main St",
+      "Heritage Medical Clinic - 67 Heritage Dr"
+    ]
+  };
+  
+  app.get("/results", (req, res) => {
+    const city = req.query.city.toLowerCase();
+    const clinics = clinicsData[city] || [];
+    res.render("results", { cityName: city.charAt(0).toUpperCase() + city.slice(1), clinics });
+  });
+
 // Route for login page
 app.get("/Login", (req, res) => {
     res.sendFile(__dirname + "/public/pages/Login.html"); // Serve Login page
@@ -41,21 +68,6 @@ app.get("/SignupMedical", (req, res) => {
 app.get("/About", (req, res) => {
     res.sendFile(__dirname + "/public/pages/About.html"); // Serve About page
     console.log("User authenticated, serving the About page");
-});
-
-app.get("/Regina", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/Regina.html"); // Serve About page
-    console.log("User authenticated, serving the Regina page");
-});
-
-app.get("/Saskatoon", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/Saskatoon.html"); // Serve About page
-    console.log("User authenticated, serving the Saskatoon page");
-});
-
-app.get("/MooseJaw", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/MJ.html"); // Serve About page
-    console.log("User authenticated, serving the Moose Jaw page");
 });
 
 // Use routes from userController
