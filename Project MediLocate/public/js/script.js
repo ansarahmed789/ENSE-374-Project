@@ -55,14 +55,17 @@ document.addEventListener("DOMContentLoaded", function () {
 function redirectToCity() {
     const city = document.getElementById('cityInput').value.trim().toLowerCase();
 
-    if (city === 'regina') {
-        window.location.href = 'Regina.html';
-    } else if (city === 'moose jaw') {
-        window.location.href = 'MJ.html';
-    } else if (city === 'saskatoon') {
-        window.location.href = 'Saskatoon.html';
+// Map city names to their respective pages
+    const cityRoutes = {
+        "Regina": "/Regina",
+        "Saskatoon": "/Saskatoon",
+        "Moose jaw": "/MooseJaw"
+    };
+
+    if (cityRoutes[city]) {
+        window.location.href = cityRoutes[city]; // Redirect to the respective clinic page
     } else {
-        alert("Please enter a valid city: Regina, Moose Jaw, or Saskatoon.");
+        alert("City not found. Please select Regina, Saskatoon, or Moose Jaw.");
     }
 }
 

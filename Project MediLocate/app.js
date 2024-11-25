@@ -43,17 +43,17 @@ app.get("/About", (req, res) => {
     console.log("User authenticated, serving the About page");
 });
 
-app.get("/FindClinic1", (req, res) => {
+app.get("/Regina", (req, res) => {
     res.sendFile(__dirname + "/public/pages/Regina.html"); // Serve About page
     console.log("User authenticated, serving the Regina page");
 });
 
-app.get("/FindClinic2", (req, res) => {
+app.get("/Saskatoon", (req, res) => {
     res.sendFile(__dirname + "/public/pages/Saskatoon.html"); // Serve About page
     console.log("User authenticated, serving the Saskatoon page");
 });
 
-app.get("/FindClinic3", (req, res) => {
+app.get("/MooseJaw", (req, res) => {
     res.sendFile(__dirname + "/public/pages/MJ.html"); // Serve About page
     console.log("User authenticated, serving the Moose Jaw page");
 });
