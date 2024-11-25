@@ -352,3 +352,7 @@ body {
   max-width: 700px;
   margin: auto;
 }
+.fixed-button-size {
+  width: 250px; 
+  height: 85px; /* Set a fixed width to make all buttons the same size */
+}
