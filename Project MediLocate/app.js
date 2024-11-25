@@ -35,12 +35,27 @@ app.get("/Home", (req, res) => {
 
 app.get("/SignupMedical", (req, res) => {
     res.sendFile(__dirname + "/public/pages/SignupMedical.html"); // Serve Signup Medical page
-    console.log("User authenticated, serving the Home page");
+    console.log("User authenticated, serving the Signup page");
 });
 
 app.get("/About", (req, res) => {
     res.sendFile(__dirname + "/public/pages/About.html"); // Serve About page
     console.log("User authenticated, serving the About page");
+});
+
+app.get("/FindClinic1", (req, res) => {
+    res.sendFile(__dirname + "/public/pages/Regina.html"); // Serve About page
+    console.log("User authenticated, serving the Regina page");
+});
+
+app.get("/FindClinic2", (req, res) => {
+    res.sendFile(__dirname + "/public/pages/Saskatoon.html"); // Serve About page
+    console.log("User authenticated, serving the Saskatoon page");
+});
+
+app.get("/FindClinic3", (req, res) => {
+    res.sendFile(__dirname + "/public/pages/MJ.html"); // Serve About page
+    console.log("User authenticated, serving the Moose Jaw page");
 });
 
 // Use routes from userController
