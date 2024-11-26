@@ -1,12 +1,11 @@
 const express = require("express");
-const mongoose = require("mongoose");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 app.set("view engine", "ejs");
-
+const userRoutes = require("./Controller/userController"); // Import the routes
 const PORT = 3000;
 
 const mongoose = require( "mongoose" );
@@ -18,7 +17,6 @@ mongoose.connect( "mongodb://localhost:27017/medilocate", {
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("MongoDB connection error:", err));
 
-const mongoose = require("mongoose");
 
 // Define the user schema
 const userSchema = new mongoose.Schema({
@@ -42,7 +40,8 @@ app.use(express.static("public")); // Serve static files from the public directo
 
 // Route for the root path
 app.get("/", (req, res) => {
-    res.render("/Login"); // Redirect to the login page
+    // res.redirect("/Login"); // Redirect to the login page
+    res.sendFile(__dirname + "/public/pages/Login.html"); // Serve Login page
 });
 
 // const clinicsData = {
@@ -120,9 +119,9 @@ app.get("/MyAppointments", (req, res) => {
 });
 
 // Use routes from userController
-app.use("/", userRoutes);
+app.use("/", userRoutes)
 
 // Start the server
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

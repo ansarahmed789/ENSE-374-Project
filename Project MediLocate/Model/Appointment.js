@@ -1,5 +1,5 @@
 // models/Appointment.js
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
     userId: {
