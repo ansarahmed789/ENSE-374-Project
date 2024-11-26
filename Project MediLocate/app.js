@@ -1,5 +1,10 @@
 const express = require("express");
+require('dotenv').config(); // Load .env variables
 
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -17,6 +22,51 @@ mongoose.connect( "mongodb://localhost:27017/medilocate", {
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.error("MongoDB connection error:", err));
 
+// Session setup
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Passport middleware setup
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport Local Strategy setup
+passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
+    try {
+        const user = await User.findOne({ username: email });
+        if (!user) {
+            return done(null, false, { message: 'Incorrect email.' });
+        }
+
+        // Compare hashed passwords
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
+// Serialize and deserialize users
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+});
+
 
 // Define the user schema
 const userSchema = new mongoose.Schema({
@@ -27,7 +77,8 @@ const userSchema = new mongoose.Schema({
 });
 
 // Create and export the User model
-const User = mongoose.model("User", userSchema);
+// const User = mongoose.model("User", userSchema);
+const User = require("./Model/userModel"); // Import the User model (adjust the path as needed)
 
 module.exports = User;
 
@@ -40,31 +91,9 @@ app.use(express.static("public")); // Serve static files from the public directo
 
 // Route for the root path
 app.get("/", (req, res) => {
-    // res.redirect("/Login"); // Redirect to the login page
-    res.sendFile(__dirname + "/public/pages/Login.html"); // Serve Login page
+    res.render("Login", { email: '' });
 });
 
-// const clinicsData = {
-//     regina: [
-//       "Meadow Primary Health Care Center - 4006 Dewdney Avenue",
-//       "Victoria East Medical Clinic - 2068 Prince of Wales Dr",
-//       "Northgate Medical Clinic - 5885 Rochdale Blvd",
-//       "South End Medical Clinic - 3400 Partridge Crescent"
-//     ],
-//     saskatoon: [
-//       "Lakeside Medical Clinic - 215 Joseph Okemasis Dr",
-//       "Saskatoon Health Center - 123 Central Ave",
-//       "Broadway Health Clinic - 987 Broadway Ave",
-//       "Stonebridge Medical Center - 456 Stonebridge Blvd"
-//     ],
-//     MooseJaw: [
-//       "Alliance Health Medical Center - 890-A Lillooet St W",
-//       "Hillcrest Medical Clinic - 200 Hill St",
-//       "Prairie Sky Medical Center - 45 Main St",
-//       "Heritage Medical Clinic - 67 Heritage Dr"
-//     ]
-//   };
-  
   app.get("/results", (req, res) => {
     const city = req.query.city.toLowerCase();
     const clinics = clinicsData[city] || [];
@@ -73,13 +102,13 @@ app.get("/", (req, res) => {
 
  // Route for login page
 app.get("/Login", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/Login.html"); // Serve Login page
+    res.render("Login", { email: '' }); // Serve Login page
     console.log("A user requested the Login page");
 });
 
 // Route for signup page
 app.get("/Signup", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/Signup.html"); // Serve Signup page
+    res.render("Signup", { name: '', email: '' }); // Serve Signup page
     console.log("A user requested the Signup page");
 });
 
@@ -88,14 +117,19 @@ app.get("/Home", (req, res) => {
     res.render("home"); // Serve home.ejs
     console.log("User authenticated, serving the Home page");
 });
+// Route for MyAppointments page
+app.get("/MyAppointments", (req, res) => {
+    res.render("myAppointments", { appointments: '' }); // Serve home.ejs
+    console.log("User authenticated, serving the Home page");
+});
 
 app.get("/SignupMedical", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/SignupMedical.html"); // Serve Signup Medical page
+    res.render("SignupMedical", { name: '', email: '' , medicalId:''}); // Serve Signup Medical page
     console.log("User authenticated, serving the Signup page");
 });
 
 app.get("/About", (req, res) => {
-    res.sendFile(__dirname + "/public/pages/About.html"); // Serve About page
+    res.render("About"); // Serve About page
     console.log("User authenticated, serving the About page");
 });
 

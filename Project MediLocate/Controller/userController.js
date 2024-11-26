@@ -1,130 +1,109 @@
 const express = require("express");
 const router = express.Router();
 const path = require("path");
+const fs = require("fs");
+const passport = require("passport");
+
+const User = require("../Model/userModel"); // Import the User model (adjust the path accordingly)
 
 const usersFilePath = path.join(__dirname, "/users.json");
 
 // POST route to handle login
-router.post("/Login", (req, res) => {
+router.post("/Login", passport.authenticate("local", {
+    successRedirect: "/home",
+    failureRedirect: "/login",
+    failureFlash: false // Add flash messages if you want to show error messages
+    }));
+
+
+router.post("/Signup", async(req, res) => {
+    try {
     console.log(req.body); // Debugging: Log request body
 
-    const useremail = req.body["username"];
-    const reqPassword = req.body["password"];
+    const { name, email, password } = req.body;
 
-    // Read the JSON file
-    fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
-        if (err) {
-            console.error("Error reading users.json:", err);
-            return res.status(500).send("Server error");
+        // Check if user already exists
+        const userExists = await User.findOne({ username: email });
+        if (userExists) {
+            return res.status(400).send("User already exists. Please log in.");
         }
 
-        try {
-            const users = JSON.parse(jsonString);
+        // Create new user
+        const newUser = new User({
+            name: name,
+            username: email,
+            password: password
+        });
 
-            // Find the user in the JSON file
-            const userExists = users.find((user) => user.username === useremail && user.password === reqPassword);
+        await newUser.save();
 
-            if (userExists) {
-                console.log("User logged in successfully:", useremail);
-                res.redirect("/Home"); // Redirect to the home page
-            } else {
-                console.log("Invalid credentials for username:", useremail);
-                res.redirect("/"); // Redirect to login page
-            }
-        } catch (parseErr) {
-            console.error("Error parsing users.json:", parseErr);
-            res.status(500).send("Server error");
-        }
+        // Log the user in automatically
+        req.login(newUser, (err) => {
+            if (err) return res.status(500).send("Server error");
+            return res.redirect("/home");
+        });
+    } catch (error) {
+        console.error("Error signing up:", error);
+        res.status(500).send("Server error");
+    }
     });
-});
 
-router.post("/Signup", (req, res) => {
+
+router.post("/SignupMedical", async (req, res) => {
+    try {
     console.log(req.body); // Debugging: Log request body
-
-    const newUser = {
+    const newMedicalUser = new User({
         name: req.body["name"],
-        username: req.body["username"],
-        password: req.body["password"]
-    };
-
-    // Read the JSON file
-    fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
-        if (err) {
-            console.error("Error reading users.json:", err);
-            return res.status(500).send("Server error");
-        }
-
-        try {
-            const users = JSON.parse(jsonString);
-
-            // Check if the user already exists
-            const userExists = users.find((user) => user.username === newUser.username);
-            if (userExists) {
-                console.log("User already exists:", newUser.username);
-                return res.status(400).send("User already exists. Please log in.");
-            }
-
-            // Add new user to the array
-            users.push(newUser);
-
-            // Write the updated users array back to the file
-            fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), "utf8", (writeErr) => {
-                if (writeErr) {
-                    console.error("Error writing to users.json:", writeErr);
-                    return res.status(500).send("Server error");
-                }
-
-                console.log("New user added successfully:", newUser);
-                res.redirect("/Home"); // Redirect to the home page
-            });
-        } catch (parseErr) {
-            console.error("Error parsing users.json:", parseErr);
-            res.status(500).send("Server error");
-        }
-    });
-});
-
-router.post("/SignupMedical", (req, res) => {
-    console.log(req.body); // Debugging: Log request body
-    const newMedicalUser = {
-        name: req.body["name"],
-        username: req.body["username"],
+        username: req.body["email"],
         password: req.body["password"],
         medicalid: req.body["medicalId"]
-    };
-
-    // Read the users.json file
-    fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
-        if (err) {
-            console.error("Error reading users.json:", err);
-            return res.status(500).send("Server error");
-        }
-
-        try {
-            const users = JSON.parse(jsonString);
-            const userExists = users.find(user => user.username === newMedicalUser.username);
+    });
+            const userExists =await User.findOne({ username: newMedicalUser.username });
 
             if (userExists) {
                 console.log("Medical user already exists:", newMedicalUser.username);
-                return res.redirect("/");
-            } else {
-                users.push(newMedicalUser);
-                console.log("New medical user added successfully:", newMedicalUser);
-
-                // Write the updated users array back to the file
-                fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), "utf8", writeErr => {
-                    if (writeErr) {
-                        console.error("Error writing to users.json:", writeErr);
-                        return res.status(500).send("Server error");
-                    }
-
-                    res.redirect("/Home"); // Redirect to the home page
-                });
+                return res.redirect("/Login");
             }
-        } catch (parseErr) {
-            console.error("Error parsing users.json:", parseErr);
+        // Save the new medical user to MongoDB
+        await newMedicalUser.save();         
+                console.log("New medical user added successfully:", newMedicalUser);
+                    res.redirect("/Home"); // Redirect to the home page
+
+        } catch (error) {
+            console.error("Error parsing users.json:", error);
             res.status(500).send("Server error");
         }
+    });
+    // Protect /home route
+router.get("/home", (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render("home"); // Render home.ejs if user is authenticated
+    } else {
+        res.redirect("/login");
+    }
+});
+// Protect /myAppointments route
+router.get("/myAppointments", async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const appointments = await Appointment.find({ userId: req.user._id });
+            res.render("MyAppointments", { appointments });
+        } catch (error) {
+            console.error("Error fetching appointments:", error);
+            res.status(500).send("Server error");
+        }
+    } else {
+        res.redirect("/login");
+    }
+});
+
+router.get("/logout", (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.error("Logout error:", err);
+            return res.status(500).send("Server error");
+        }
+        res.redirect("/login");
     });
 });
 
