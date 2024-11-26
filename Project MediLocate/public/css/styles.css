@@ -356,3 +356,21 @@ body {
   width: 250px; 
   height: 85px; /* Set a fixed width to make all buttons the same size */
 }
+/* book appointment popup */
+.carousel-item img {
+  height: 400px;
+  object-fit: cover;
+}
+.modal-header, .modal-body, .modal-footer {
+  background-color: #f8f9fa;
+}
+.btn-book {
+  width: 100%;
+}
+.accordion-button:focus {
+  box-shadow: none;
+}
+.fixed-button-size {
+  width: 250px; 
+  height: 85px;
+}
