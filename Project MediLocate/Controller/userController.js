@@ -6,7 +6,6 @@ const passport = require("passport");
 
 const User = require("../Model/userModel"); // Import the User model (adjust the path accordingly)
 
-const usersFilePath = path.join(__dirname, "/users.json");
 
 // POST route to handle login
 router.post("/Login", passport.authenticate("local", {
