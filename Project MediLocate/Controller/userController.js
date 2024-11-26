@@ -132,5 +132,27 @@ router.post("/SignupMedical", (req, res) => {
     });
 });
 
+// POST route for My Appointments page
+router.post("MyAppointments", async (req, res) => {
+    try {
+        // Assuming `userId` is stored in session, request body, or any user auth logic
+        const userId = req.body.userId; // You can adapt this part based on your session or login logic
+
+        if (!userId) {
+            return res.status(400).send("User ID not provided");
+        }
+
+        // Fetch all appointments for the logged-in user
+        const appointments = await Appointment.find({ userId });
+
+        // Render the MyAppointments.ejs page and pass the user's appointments data
+        res.render("MyAppointments", { appointments });
+    } catch (error) {
+        console.error("Error fetching user appointments:", error);
+        res.status(500).send("An error occurred while fetching appointments");
+    }
+});
+
+
 
 module.exports = router;

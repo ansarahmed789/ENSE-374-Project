@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 
 const userRoutes = require("./Controller/userController");
-
+const Appointment = require('./Model/Appointment');
 const mongoose = require( "mongoose" );
 // connect to mongoose on port 27017
 mongoose.connect( "mongodb://localhost:27017/medilocate", {
@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
     res.render("results", { cityName: city.charAt(0).toUpperCase() + city.slice(1), clinics });
   });
 
-// Route for login page
+ // Route for login page
 app.get("/Login", (req, res) => {
     res.sendFile(__dirname + "/public/pages/Login.html"); // Serve Login page
     console.log("A user requested the Login page");
@@ -93,6 +93,10 @@ app.get("/moose-jaw", (req, res) => {
 // Route for Saskatoon page
 app.get("/saskatoon", (req, res) => {
     res.render("Saskatoon"); // Renders Saskatoon.ejs
+});
+// Route for Saskatoon page
+app.get("/MyAppointments", (req, res) => {
+    res.render("MyAppointments"); // Renders MyAppointments.ejs
 });
 
 // Use routes from userController

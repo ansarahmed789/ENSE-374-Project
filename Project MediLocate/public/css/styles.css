@@ -374,3 +374,35 @@ body {
   width: 250px; 
   height: 85px;
 }
+/* MyAppointments.ejs */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Appointments Section Styles */
+.appointments-section {
+  padding-top: 20px;
+}
+
+.appointment-card {
+  border-radius: 10px;
+}
+
+.card-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.card-body {
+  font-size: 1.1rem;
+}
+
+.btn-outline-danger {
+  float: right;
+}
+
+/* Align footer to stick to the bottom */
+.footer {
+  margin-top: 20px;
+  border-top: 1px solid #e7e7e7;
+}
