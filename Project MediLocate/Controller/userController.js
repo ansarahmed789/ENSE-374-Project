@@ -1,17 +1,17 @@
-const fs = require("fs");
 const express = require("express");
 const router = express.Router();
+const path = require("path");
+
+const usersFilePath = path.join(__dirname, "/users.json");
 
 // POST route to handle login
 router.post("/Login", (req, res) => {
     console.log(req.body); // Debugging: Log request body
+
     const useremail = req.body["username"];
     const reqPassword = req.body["password"];
 
-    // Path to users.json file
-    const usersFilePath = __dirname + "/users.json";
-
-    // Read the users.json file
+    // Read the JSON file
     fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
         if (err) {
             console.error("Error reading users.json:", err);
@@ -20,13 +20,12 @@ router.post("/Login", (req, res) => {
 
         try {
             const users = JSON.parse(jsonString);
-            const userExists = users.find((u) => u.username === useremail && u.password === reqPassword);
+
+            // Find the user in the JSON file
+            const userExists = users.find((user) => user.username === useremail && user.password === reqPassword);
 
             if (userExists) {
                 console.log("User logged in successfully:", useremail);
-                
-                // Optionally, perform additional actions here before redirecting
-                
                 res.redirect("/Home"); // Redirect to the home page
             } else {
                 console.log("Invalid credentials for username:", useremail);
@@ -39,16 +38,16 @@ router.post("/Login", (req, res) => {
     });
 });
 
-// POST route to handle signup
 router.post("/Signup", (req, res) => {
     console.log(req.body); // Debugging: Log request body
 
-    const newUser = { name: req.body["name"], username: req.body["username"], password: req.body["password"] };
+    const newUser = {
+        name: req.body["name"],
+        username: req.body["username"],
+        password: req.body["password"]
+    };
 
-    // Path to users.json file
-    const usersFilePath = __dirname + "/users.json";
-
-    // Read the users.json file
+    // Read the JSON file
     fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
         if (err) {
             console.error("Error reading users.json:", err);
@@ -58,14 +57,14 @@ router.post("/Signup", (req, res) => {
         try {
             const users = JSON.parse(jsonString);
 
-            // Check if user already exists
-            const userExists = users.find((u) => u.username === newUser.username);
+            // Check if the user already exists
+            const userExists = users.find((user) => user.username === newUser.username);
             if (userExists) {
                 console.log("User already exists:", newUser.username);
                 return res.status(400).send("User already exists. Please log in.");
             }
 
-            // Add new user to the users array
+            // Add new user to the array
             users.push(newUser);
 
             // Write the updated users array back to the file
@@ -93,9 +92,6 @@ router.post("/SignupMedical", (req, res) => {
         password: req.body["password"],
         medicalid: req.body["medicalId"]
     };
-
-    // Path to users.json file
-    const usersFilePath = __dirname + "/users.json";
 
     // Read the users.json file
     fs.readFile(usersFilePath, "utf8", (err, jsonString) => {
@@ -131,28 +127,5 @@ router.post("/SignupMedical", (req, res) => {
         }
     });
 });
-
-// POST route for My Appointments page
-router.post("MyAppointments", async (req, res) => {
-    try {
-        // Assuming `userId` is stored in session, request body, or any user auth logic
-        const userId = req.body.userId; // You can adapt this part based on your session or login logic
-
-        if (!userId) {
-            return res.status(400).send("User ID not provided");
-        }
-
-        // Fetch all appointments for the logged-in user
-        const appointments = await Appointment.find({ userId });
-
-        // Render the MyAppointments.ejs page and pass the user's appointments data
-        res.render("MyAppointments", { appointments });
-    } catch (error) {
-        console.error("Error fetching user appointments:", error);
-        res.status(500).send("An error occurred while fetching appointments");
-    }
-});
-
-
 
 module.exports = router;
