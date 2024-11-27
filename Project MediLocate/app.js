@@ -1,26 +1,19 @@
-const express = require("express");
 require('dotenv').config(); // Load .env variables
-
+const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
 const app = express();
+const userRoutes = require("./Controller/userController"); // Import the routes
+const Appointment = require("./Model/Appointment"); // Import Appointment model
+const User = require("./Model/userModel"); // Import the User model (adjust the path as needed)
+
+app.set("view engine", "ejs");
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
-app.set("view engine", "ejs");
-const userRoutes = require("./Controller/userController"); // Import the routes
-const PORT = 3000;
-
-const mongoose = require( "mongoose" );
-// connect to mongoose on port 27017
-mongoose.connect( "mongodb://localhost:27017/medilocate", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error("MongoDB connection error:", err));
 
 // Session setup
 app.use(session({
@@ -32,6 +25,17 @@ app.use(session({
 // Passport middleware setup
 app.use(passport.initialize());
 app.use(passport.session());
+
+const mongoose = require( "mongoose" );
+// connect to mongoose on port 27017
+mongoose.connect( "mongodb://localhost:27017/medilocate", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("MongoDB connection error:", err));
+
+const PORT = 3000;
 
 // Passport Local Strategy setup
 passport.use(new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
@@ -67,27 +71,7 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-
-// Define the user schema
-const userSchema = new mongoose.Schema({
-    name: String,
-    username: String,
-    password: String,
-    // medicalId: String // Optional for non-medical users
-});
-
-// Create and export the User model
-// const User = mongoose.model("User", userSchema);
-const User = require("./Model/userModel"); // Import the User model (adjust the path as needed)
-
 module.exports = User;
-
-app.set('view engine', 'ejs');
-
-// Middleware to parse JSON and serve static files
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public")); // Serve static files from the public directory
 
 // Route for the root path
 app.get("/", (req, res) => {
@@ -118,9 +102,9 @@ app.get("/Home", (req, res) => {
     console.log("User authenticated, serving the Home page");
 });
 // Route for MyAppointments page
-app.get("/MyAppointments", (req, res) => {
-    res.render("myAppointments", { appointments: '' }); // Serve home.ejs
-    console.log("User authenticated, serving the Home page");
+app.get("/myAppointments", (req, res) => {
+    res.render("MyAppointments", { appointments: '' }); // Serve home.ejs
+    console.log("User authenticated, serving the my appointments page");
 });
 
 app.get("/SignupMedical", (req, res) => {
@@ -134,9 +118,9 @@ app.get("/About", (req, res) => {
 });
 
 // Route for Regina page
-app.get("/regina", (req, res) => {
-    res.render("Regina"); // Renders Regina.ejs
-});
+// app.get("/regina", (req, res) => {
+//     res.render("Regina"); // Renders Regina.ejs
+// });
 
 // Route for Moose Jaw page
 app.get("/moose-jaw", (req, res) => {
@@ -148,10 +132,39 @@ app.get("/saskatoon", (req, res) => {
     res.render("Saskatoon"); // Renders Saskatoon.ejs
 });
 // Route for Saskatoon page
-app.get("/MyAppointments", (req, res) => {
-    res.render("MyAppointments"); // Renders MyAppointments.ejs
-});
+// app.get("/MyAppointments", (req, res) => {
+//     res.render("MyAppointments"); // Renders MyAppointments.ejs
+// });
 
+app.get('/Regina', (req, res) => {
+    const clinics = [
+      {
+        name: 'Meadow Primary Health Care Center',
+        address: '4006 Dewdney Avenue, Regina, SK',
+        image: '/images/Image-OSCS-ReginaMeadowPrimaryHealthCareCentre.jpeg'
+      },
+      {
+        name: 'Victoria East Medical Clinic',
+        address: '2068 Prince of Wales Dr, Regina, SK',
+        image: '/images/2018-06-17.jpg'
+      },
+      {
+        name: 'Apex-Medical Clinic',
+        address: '1511 11th Ave, Regina, SK',
+        image: '/images/IMG_1266-preview.jpg'
+      },
+      {
+        name: "Dr Patel's Medical Clinic",
+        address: '2625 Dewdney Ave, Regina, SK',
+        image: '/images/2018-04-14.jpg'
+      }
+    ];
+  
+    // Pass the clinics array to the Regina.ejs template
+    console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
+    res.render('Regina', { clinics });
+  });
+  
 // Use routes from userController
 app.use("/", userRoutes)
 
