@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediLocate - Regina Clinics</title>
+  <title>MediLocate - Saskatoon Clinics</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom CSS -->
@@ -42,7 +42,7 @@
             <a class="nav-link" href="/About">About</a>
           </li>
           <li class="nav-item">
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=medilocate@gmail.com" target="_blank" class="nav-link">Contact us</a>
+            <a href="mailto:medilocate@gmail.com" target="_blank" class="nav-link">Contact us</a>
           </li>
         </ul>
         <div class="dropdown">
@@ -59,143 +59,110 @@
     </div>
   </nav>
 
-  <!-- Clinics Carousel Section -->
-  <section class="clinics-carousel-section py-5">
+   <!-- Clinics Section -->
+   <section>
+    <h1 class="display-5 text-center my-5">Clinics in Saskatoon</h1>
     <div class="container">
-      <h1 class="display-5 text-center mb-5" id="clinicHeader">Clinics in Saskatoon</h1>
-      <div id="clinicsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div id="clinicCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="row">
-              <div class="col-md-6 offset-md-3">
-                <div class="card">
-                  <img src="/images/Lakeside.jpg" class="card-img-top" alt="Clinic 1">
-                  <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                      <h5 class="card-title">Lakeside Medical Clinic</h5>
-                      <p class="card-text">Address: 215 Joseph Okemasis Dr, Saskatoon, SK</p>
+          <% clinics.forEach((clinic, index) => { %>
+            <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="card shadow">
+                    <img src="<%= clinic.image %>" class="card-img-top" alt="<%= clinic.name %>">
+                    <div class="card-body text-center">
+                      <h5 class="card-title"><%= clinic.name %></h5>
+                      <p class="card-text"><strong>Address:</strong> <%= clinic.address %></p>
+                      <button class="btn btn-primary book-appointment-btn" data-clinic="<%= clinic.name %>">
+                        Book Appointment
+                      </button>
                     </div>
- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookAppointmentModal">Book Appointment</button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="carousel-item">
-            <div class="row">
-              <div class="col-md-6 offset-md-3">
-                <div class="card">
-                  <img src="/images/idylwyld.jpg" class="card-img-top" alt="Clinic 2">
-                  <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                      <h5 class="card-title">Idylwyld Medical Centre</h5>
-                      <p class="card-text">Address: 502 Idylwyld Dr N #10B, Saskatoon, SK</p>
-                    </div>
- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookAppointmentModal">Book Appointment</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="row">
-              <div class="col-md-6 offset-md-3">
-                <div class="card">
-                  <img src="/images/kenderline.jpeg" class="card-img-top" alt="Clinic 3">
-                  <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                      <h5 class="card-title">Kenderline Medical Clinic</h5>
-                      <p class="card-text">Address:  1804 McOrmond Dr #110, Saskatoon, SK</p>
-                    </div>
- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookAppointmentModal">Book Appointment</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="row">
-              <div class="col-md-6 offset-md-3">
-                <div class="card">
-                  <img src="/images/Cornerstone.jpg" class="card-img-top" alt="Clinic 4">
-                  <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                      <h5 class="card-title">Cornerstone Medical Clinic</h5>
-                      <p class="card-text">Address: 415 Wellman Crescent #100, Saskatoon, SK</p>
-                    </div>
- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookAppointmentModal">Book Appointment</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <% }) %>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#clinicsCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#clinicCarousel" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#clinicsCarousel" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#clinicCarousel" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
       </div>
     </div>
   </section>
-      <!-- Book Appointment Modal -->
-      <section>
-        <div class="modal fade" id="bookAppointmentModal" tabindex="-1" aria-labelledby="bookAppointmentModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="bookAppointmentModalLabel">Book Your Appointment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div class="accordion" id="appointmentAccordion">
-                  <!-- Day Selection Accordion -->
-                  <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingDay">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDay" aria-expanded="false" aria-controls="collapseDay">
-                        Choose a Day
-                      </button>
-                    </h2>
-                    <div id="collapseDay" class="accordion-collapse collapse" aria-labelledby="headingDay" data-bs-parent="#appointmentAccordion">
-                      <div class="accordion-body">
-                        <div class="d-flex flex-wrap gap-3">
-                          <button class="btn btn-outline-primary fixed-button-size">Monday, March 18th</button>
-                          <button class="btn btn-outline-primary fixed-button-size">Tuesday, March 19th</button>
-                          <button class="btn btn-outline-primary fixed-button-size">Wednesday, March 20th</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Time Slot Selection Accordion -->
-                  <div class="accordion-item mt-3">
-                    <h2 class="accordion-header" id="headingTime">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTime" aria-expanded="false" aria-controls="collapseTime">
-                        Choose a Time Slot
-                      </button>
-                    </h2>
-                    <div id="collapseTime" class="accordion-collapse collapse" aria-labelledby="headingTime" data-bs-parent="#appointmentAccordion">
-                      <div class="accordion-body">
-                        <div class="d-flex flex-wrap gap-3">
-                          <button class="btn btn-outline-info fixed-button-size">10:00 AM</button>
-                          <button class="btn btn-outline-info fixed-button-size">11:00 AM</button>
-                          <button class="btn btn-outline-info fixed-button-size">1:00 PM</button>
-                          <button class="btn btn-outline-info fixed-button-size">3:00 PM</button>
-                        </div>
-                      </div>
-                    </div>
+
+  <!-- Book Appointment Modal -->
+  <div class="modal fade" id="bookAppointmentModal" tabindex="-1" aria-labelledby="bookAppointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="bookAppointmentForm" action="/bookAppointment" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="bookAppointmentModalLabel">Book Your Appointment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="clinicName" id="clinicNameInput" value="">
+            <input type="hidden" name="date" id="appointmentDateInput">
+            <input type="hidden" name="time" id="appointmentTimeInput">
+
+            <!-- Accordion for Dates -->
+            <div class="accordion" id="dateAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingDate">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDate" aria-expanded="true" aria-controls="collapseDate">
+                    Choose a Date
+                  </button>
+                </h2>
+                <div id="collapseDate" class="accordion-collapse collapse show" aria-labelledby="headingDate" data-bs-parent="#dateAccordion">
+                  <div class="accordion-body" id="dateSelection">
+                    <!-- Dates will be dynamically inserted here -->
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-success w-100 btn-book">Confirm Appointment</button>
+            </div>
+
+            <!-- Accordion for Time Slots -->
+            <div class="accordion mt-3" id="timeAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTime">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTime" aria-expanded="false" aria-controls="collapseTime">
+                    Choose a Time Slot
+                  </button>
+                </h2>
+                <div id="collapseTime" class="accordion-collapse collapse" aria-labelledby="headingTime" data-bs-parent="#timeAccordion">
+                  <div class="accordion-body" id="timeSlotSelection">
+                    <!-- Time slots will be dynamically inserted here -->
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Universal Error Message Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger" id="errorModalLabel">Error</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="errorModalMessage">
+        <!-- Error message will appear here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- About Healthcare in Regina Section -->
   <section class="about-healthcare-section text-center py-5">
@@ -223,23 +190,125 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
       <!-- Custom JavaScript -->
       <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          // Debugging: check for modal buttons
-          const bookButtons = document.querySelectorAll('.btn-primary[data-bs-toggle="modal"]');
-          const modalElement = document.getElementById('bookAppointmentModal');
-          
-          bookButtons.forEach(button => {
-            button.addEventListener('click', () => {
-              console.log('Book Appointment button clicked');
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+    const clinicNameInput = document.getElementById('clinicNameInput');
+    const dateInput = document.getElementById('appointmentDateInput');
+    const timeInput = document.getElementById('appointmentTimeInput');
+    const bookButtons = document.querySelectorAll('.book-appointment-btn');
+    const dateSelectionDiv = document.getElementById('dateSelection');
+    const timeSlotSelectionDiv = document.getElementById('timeSlotSelection');
+    const bookAppointmentForm = document.getElementById('bookAppointmentForm');
+  
+    // Handle clicking on "Book Appointment" buttons for each clinic
+    bookButtons.forEach(button => {
+      button.addEventListener('click', function () {
+        const clinicName = this.getAttribute('data-clinic');
+        clinicNameInput.value = clinicName;
+        // Fetch available dates from the server
+        fetch(`/getAvailability?clinicName=${clinicName}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.dates) {
+              // Populate the date buttons
+              dateSelectionDiv.innerHTML = ''; // Clear existing buttons
+              data.dates.forEach(date => {
+                const dateButton = document.createElement('button');
+                dateButton.classList.add('btn', 'btn-outline-primary', 'm-2', 'date-button');
+                dateButton.textContent = new Date(date).toLocaleDateString();
+                dateButton.value = date;
+  
+                // Add click event to date button
+                dateButton.addEventListener('click', () => {
+                  dateInput.value = dateButton.value;
+  
+                  // Clear the existing time slots
+                  timeSlotSelectionDiv.innerHTML = '';
+  
+                  // Open the time slots accordion
+                  const timeCollapse = new bootstrap.Collapse('#collapseTime', {
+                    toggle: true
+                  });
+  
+                  // Populate the time slots for the selected date
+                  data.timeSlots.forEach(slot => {
+                    if (slot.date === dateButton.value) {
+                      const timeButton = document.createElement('button');
+                      timeButton.classList.add('btn', 'btn-outline-primary', 'm-2');
+                      timeButton.textContent = slot.time;
+                      timeButton.value = slot.time;
+                      timeButton.disabled = slot.isBooked; // Disable booked slots
+  
+                      // Add click event to time button
+                      timeButton.addEventListener('click', () => {
+                        timeInput.value = timeButton.value;
+                      });
+  
+                      timeSlotSelectionDiv.appendChild(timeButton);
+                    }
+                  });
+                });
+  
+                dateSelectionDiv.appendChild(dateButton);
+              });
+            }
           });
+  
+        // Show the modal for booking
+        const modal = new bootstrap.Modal(document.getElementById('bookAppointmentModal'));
+        modal.show();
+      });
+    });
+  
+    // Validate form submission to ensure date and time are selected
+    bookAppointmentForm.addEventListener('submit', (e) => {
+      if (!dateInput.value || !timeInput.value) {
+        e.preventDefault();
+        alert('Please select both a date and a time slot before confirming your appointment.');
+      }
+    });
+  });
+  // document.addEventListener('DOMContentLoaded', () => {
+  //   const bookAppointmentForm = document.getElementById('bookAppointmentForm');
     
-          if (modalElement) {
-            console.log('Modal is available on the page');
-          } else {
-            console.error('Modal is not found on the page, please check the ID.');
-          }
-        });
+  //   if (bookAppointmentForm) {
+  //     bookAppointmentForm.addEventListener('submit', async (e) => {
+  //       e.preventDefault(); // Prevent the default form submission
+
+  //       const formData = new FormData(bookAppointmentForm);
+  //       const data = Object.fromEntries(formData.entries());
+
+  //       try {
+  //         const response = await fetch('/bookAppointment', {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json'
+  //           },
+  //           body: JSON.stringify(data)
+  //         });
+
+  //         const result = await response.json();
+
+  //         if (response.ok) {
+  //           // Redirect to MyAppointments if booking is successful
+  //           window.location.href = '/MyAppointments';
+  //         } else {
+  //           // Show the error message in the modal
+  //           showErrorModal(result.message);
+  //         }
+  //       } catch (error) {
+  //         console.error('Error submitting form:', error);
+  //         showErrorModal('An unexpected error occurred. Please try again later.');
+  //       }
+  //     });
+  //   }
+
+  //   // Function to display the error message modal
+  //   function showErrorModal(message) {
+  //     const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+  //     document.getElementById('errorModalMessage').textContent = message;
+  //     errorModal.show();
+  //   }
+  // });
       </script>
 </body>
 

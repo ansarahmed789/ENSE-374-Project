@@ -8,7 +8,7 @@ const app = express();
 const userRoutes = require("./Controller/userController"); // Import the routes
 const Appointment = require("./Model/Appointment"); // Import Appointment model
 const User = require("./Model/userModel"); // Import the User model (adjust the path as needed)
-
+const Clinic = require('./Model/Clinic'); // Import the Clinic model
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
@@ -73,16 +73,17 @@ passport.deserializeUser(async (id, done) => {
 
 module.exports = User;
 
+
 // Route for the root path
 app.get("/", (req, res) => {
     res.render("Login", { email: '' });
 });
 
-  app.get("/results", (req, res) => {
-    const city = req.query.city.toLowerCase();
-    const clinics = clinicsData[city] || [];
-    res.render("results", { cityName: city.charAt(0).toUpperCase() + city.slice(1), clinics });
-  });
+//   app.get("/results", (req, res) => {
+//     const city = req.query.city.toLowerCase();
+//     const clinics = clinicsData[city] || [];
+//     res.render("results", { cityName: city.charAt(0).toUpperCase() + city.slice(1), clinics });
+//   });
 
  // Route for login page
 app.get("/Login", (req, res) => {
@@ -102,10 +103,10 @@ app.get("/Home", (req, res) => {
     console.log("User authenticated, serving the Home page");
 });
 // Route for MyAppointments page
-app.get("/myAppointments", (req, res) => {
-    res.render("MyAppointments", { appointments: '' }); // Serve home.ejs
-    console.log("User authenticated, serving the my appointments page");
-});
+// app.get("/MyAppointments", (req, res) => {
+//     res.render("MyAppointments", { appointments: '' }); // Serve home.ejs
+//     console.log("User authenticated, serving the my appointments page");
+// });
 
 app.get("/SignupMedical", (req, res) => {
     res.render("SignupMedical", { name: '', email: '' , medicalId:''}); // Serve Signup Medical page
@@ -123,19 +124,46 @@ app.get("/About", (req, res) => {
 // });
 
 // Route for Moose Jaw page
-app.get("/moose-jaw", (req, res) => {
-    res.render("MJ"); // Renders MJ.ejs
-});
-
-// Route for Saskatoon page
-app.get("/saskatoon", (req, res) => {
-    res.render("Saskatoon"); // Renders Saskatoon.ejs
-});
-// Route for Saskatoon page
-// app.get("/MyAppointments", (req, res) => {
-//     res.render("MyAppointments"); // Renders MyAppointments.ejs
+// app.get("/moose-jaw", (req, res) => {
+//     res.render("MJ"); // Renders MJ.ejs
 // });
 
+// Route for Saskatoon page
+// app.get("/saskatoon", (req, res) => {
+//     res.render("Saskatoon"); // Renders Saskatoon.ejs
+// });
+
+app.get('/Regina', async (req, res) => {
+    try {
+        const clinics = await Clinic.find({ address: /Regina/i }); // Fetch Regina clinics
+        res.render('Regina', { clinics });
+    } catch (error) {
+        console.error("Error fetching Regina clinics:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get('/moose-jaw', async (req, res) => {
+    try {
+        const clinics = await Clinic.find({ address: /Moose Jaw/i }); // Fetch Moose Jaw clinics
+        res.render('MJ', { clinics });
+    } catch (error) {
+        console.error("Error fetching Moose Jaw clinics:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+app.get('/saskatoon', async (req, res) => {
+    try {
+        const clinics = await Clinic.find({ address: /Saskatoon/i }); // Fetch Saskatoon clinics
+        res.render('Saskatoon', { clinics });
+    } catch (error) {
+        console.error("Error fetching Saskatoon clinics:", error);
+        res.status(500).send("Server error");
+    }
+});
+
+// Regina.ejs clinics
 app.get('/Regina', (req, res) => {
     const clinics = [
       {
@@ -161,8 +189,68 @@ app.get('/Regina', (req, res) => {
     ];
   
     // Pass the clinics array to the Regina.ejs template
-    console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
+    // console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
     res.render('Regina', { clinics });
+  });
+// MJ.ejs clinics
+app.get('/moose-jaw', (req, res) => {
+    const clinics = [
+      {
+        name: 'Alliance Health Medical Center',
+        address: '890-A Lillooet St W, Moose Jaw, SK',
+        image: '/images/Alliance.jpg'
+      },
+      {
+        name: 'Medella Medical Clinic',
+        address: '58 Highland Rd Unit 5, Moose Jaw, SK',
+        image: '/images/medella.webp'
+      },
+      {
+        name: 'Circle Medical Centre',
+        address: '1251 Main St N Unit 2B, Moose Jaw, SK',
+        image: '/images/Circle med.jpg'
+      },
+      {
+        name: "Prairie Skies Medical Clinic",
+        address: '36 Athabasca St W, Moose Jaw, SK',
+        image: '/images/P skies.jpg'
+      }
+    ];
+  
+    // Pass the clinics array to the Regina.ejs template
+    // console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
+    console.log('Clinics passed to MJ.ejs:', clinics); // Debugging log
+    res.render('MJ', { clinics });
+  });
+// Saskatoon.ejs clinics
+app.get('/saskatoon', (req, res) => {
+    const clinics = [
+      {
+        name: 'Lakeside Medical Clinic',
+        address: '215 Joseph Okemasis Dr, Saskatoon, SK',
+        image: '/images/Lakeside.jpg'
+      },
+      {
+        name: 'Idylwyld Medical Centre',
+        address: '502 Idylwyld Dr N #10B, Saskatoon, SK',
+        image: '/images/idylwyld.jpg'
+      },
+      {
+        name: 'Kenderline Medical Clinic',
+        address: '1804 McOrmond Dr #110, Saskatoon, SK',
+        image: '/images/kenderline.jpeg'
+      },
+      {
+        name: ">Cornerstone Medical Clinic",
+        address: '415 Wellman Crescent #100, Saskatoon, SK',
+        image: '/images/Cornerstone.jpg'
+      }
+    ];
+
+  
+    // Pass the clinics array to the Regina.ejs template
+    // console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
+    res.render('Saskatoon', { clinics });
   });
   
 // Use routes from userController

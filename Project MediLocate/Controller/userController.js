@@ -7,15 +7,8 @@ const mongoose = require ("mongoose");
 const nodemailer = require("nodemailer");
 const Appointment = require("../Model/Appointment"); // Import Appointment model
 const User = require("../Model/userModel"); // Import the User model (adjust the path accordingly)
-
-// Create a reusable transporter object using SMTP transport
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD
-    }
-});
+const Availability = require('../Model/Availability');
+const Clinic = require('../Model/Clinic'); // Import the Clinic model
 
 // POST route to handle login
 router.post("/Login", passport.authenticate("local", {
@@ -91,20 +84,49 @@ router.get("/home", (req, res) => {
         res.redirect("/login");
     }
 });
-// Protect /myAppointments route
-// router.get("/myAppointments", async (req, res) => {
-//     if (req.isAuthenticated()) {
-//         try {
-//             const appointments = await Appointment.find({ userId: req.user._id });
-//             res.render("MyAppointments", { appointments });
-//         } catch (error) {
-//             console.error("Error fetching appointments:", error);
-//             res.status(500).send("Server error");
-//         }
-//     } else {
-//         res.redirect("/login");
-//     }
-// });
+
+// Route for /getAvailability
+router.get('/getAvailability', async (req, res) => {
+    try {
+        const clinicName = req.query.clinicName;
+
+        // Debug: Ensure the clinicName is received
+        console.log('Clinic name received for availability:', clinicName);
+
+        // Find the clinic by name
+        const clinic = await Clinic.findOne({ name: clinicName });
+        if (!clinic) {
+            console.error('Clinic not found:', clinicName);
+            return res.status(404).send({ success: false, message: 'Clinic not found' });
+        }
+
+        // Fetch availability for the clinic using clinicId
+        const availability = await Availability.find({ clinicId: clinic._id });
+
+        if (!availability || availability.length === 0) {
+            console.log('No availability found for clinic:', clinicName);
+            return res.status(200).send({ success: true, dates: [], timeSlots: [] });
+        }
+
+        // Structure response
+        const dates = availability.map(avail => avail.date);
+        const timeSlots = availability.flatMap(avail =>
+            avail.timeSlots.map(slot => ({
+                date: avail.date,
+                time: slot.time,
+                isBooked: slot.isBooked
+            }))
+        );
+
+        res.status(200).send({ success: true, dates, timeSlots });
+    } catch (error) {
+        console.error('Error fetching availability:', error);
+        res.status(500).send({ success: false, message: 'Error fetching availability' });
+    }
+});
+
+  
+  
 
 //Route for book appointment 
 router.post('/bookAppointment', async (req, res) => {
@@ -116,64 +138,73 @@ router.post('/bookAppointment', async (req, res) => {
         const { clinicName, date, time } = req.body;
         const userId = req.user._id;
 
-        // Check if an appointment for the same date and time already exists
-        const existingAppointment = await Appointment.findOne({ clinicName, date, time, userId });
+        // Check if the appointment already exists
+        const existingAppointment = await Appointment.findOne({ clinicName, date, time });
         if (existingAppointment) {
-            return res.status(400).send({ success: false, message: 'You already have an appointment for this time.' });
+            console.log('Time slot already booked by someone else:', existingAppointment);
+            return res.status(400).send({ 
+                success: false, 
+                message: 'This time slot is already booked. Please choose a different time.' 
+            });
         }
+
+        // Find the clinic
+        const clinic = await Clinic.findOne({ name: clinicName });
+        if (!clinic) {
+            return res.status(404).send({ success: false, message: 'Clinic not found' });
+        }
+
+        // Update the availability and mark the time slot as booked
+        await Availability.updateOne(
+            { clinicId: clinic._id, date, 'timeSlots.time': time },
+            { $set: { 'timeSlots.$.isBooked': true } }
+        );
 
         // Create new appointment
         const newAppointment = new Appointment({
             userId,
             clinicName,
             date,
-            time
+            time,
         });
 
         await newAppointment.save();
+
         console.log('Appointment booked successfully:', newAppointment);
 
-        // res.status(200).send({ success: true, message: 'Appointment booked successfully!' });
-        
+        // Redirect to the MyAppointments page after booking
+        res.redirect('/MyAppointments');
     } catch (error) {
         console.error('Error booking appointment:', error);
-        // res.status(500).send({ success: false, message: 'Error booking appointment' });
+        res.status(500).send({ success: false, message: 'Error booking appointment' });
     }
 });
+
+
+  
 
 // Protect /myAppointments route
-router.get("/myAppointments", async (req, res) => {
-    if (!req.isAuthenticated()) {
-        console.log("User not authenticated, redirecting to login");
-        return res.redirect("/login");
-    }
 
-    console.log("User authenticated, proceeding to fetch appointments...");
+router.get('/MyAppointments', async (req, res) => {
+    console.log('MyAppointments route was called');
+    if (!req.isAuthenticated()) {
+        console.log('User is not authenticated. Redirecting to /Login');
+        return res.redirect('/Login');
+    }
 
     try {
-        if (!req.user) {
-            console.log("No user found in req object, redirecting to login.");
-            return res.redirect("/login");
-        }
+        const userId = req.user._id; // Ensure req.user exists
+        console.log('Logged-in user ID:', userId);
+        const appointments = await Appointment.find({ userId }) || []; // Default to empty array if no results
 
-        console.log("Authenticated user details:", req.user); // Log the entire user object
-
-        const appointments = await Appointment.find({ userId: req.user._id });
-
-        // Log the results of the appointment query
-        if (appointments.length > 0) {
-            console.log("Retrieved appointments:", appointments);
-        } else {
-            console.log("No appointments found for user.");
-        }
-
-        // Render the MyAppointments page with the retrieved appointments
-        res.render("MyAppointments", { appointments });
+        console.log('Appointments sent to EJS:', appointments);
+        res.render('MyAppointments', { appointments });
     } catch (error) {
-        console.error("Error fetching appointments:", error);
-        res.status(500).send("Server error");
+        console.error('Error fetching appointments:', error);
+        res.status(500).send('An error occurred while fetching appointments.');
     }
 });
+
 
 router.get("/logout", (req, res) => {
     req.logout((err) => {
