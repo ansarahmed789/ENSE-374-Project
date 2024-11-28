@@ -78,13 +78,6 @@ module.exports = User;
 app.get("/", (req, res) => {
     res.render("Login", { email: '' });
 });
-
-//   app.get("/results", (req, res) => {
-//     const city = req.query.city.toLowerCase();
-//     const clinics = clinicsData[city] || [];
-//     res.render("results", { cityName: city.charAt(0).toUpperCase() + city.slice(1), clinics });
-//   });
-
  // Route for login page
 app.get("/Login", (req, res) => {
     res.render("Login", { email: '' }); // Serve Login page
@@ -102,12 +95,6 @@ app.get("/Home", (req, res) => {
     res.render("home"); // Serve home.ejs
     console.log("User authenticated, serving the Home page");
 });
-// Route for MyAppointments page
-// app.get("/MyAppointments", (req, res) => {
-//     res.render("MyAppointments", { appointments: '' }); // Serve home.ejs
-//     console.log("User authenticated, serving the my appointments page");
-// });
-
 app.get("/SignupMedical", (req, res) => {
     res.render("SignupMedical", { name: '', email: '' , medicalId:''}); // Serve Signup Medical page
     console.log("User authenticated, serving the Signup page");
@@ -117,22 +104,6 @@ app.get("/About", (req, res) => {
     res.render("About"); // Serve About page
     console.log("User authenticated, serving the About page");
 });
-
-// Route for Regina page
-// app.get("/regina", (req, res) => {
-//     res.render("Regina"); // Renders Regina.ejs
-// });
-
-// Route for Moose Jaw page
-// app.get("/moose-jaw", (req, res) => {
-//     res.render("MJ"); // Renders MJ.ejs
-// });
-
-// Route for Saskatoon page
-// app.get("/saskatoon", (req, res) => {
-//     res.render("Saskatoon"); // Renders Saskatoon.ejs
-// });
-
 app.get('/Regina', async (req, res) => {
     try {
         const clinics = await Clinic.find({ address: /Regina/i }); // Fetch Regina clinics
@@ -187,9 +158,6 @@ app.get('/Regina', (req, res) => {
         image: '/images/2018-04-14.jpg'
       }
     ];
-  
-    // Pass the clinics array to the Regina.ejs template
-    // console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
     res.render('Regina', { clinics });
   });
 // MJ.ejs clinics
@@ -216,9 +184,6 @@ app.get('/moose-jaw', (req, res) => {
         image: '/images/P skies.jpg'
       }
     ];
-  
-    // Pass the clinics array to the Regina.ejs template
-    // console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
     console.log('Clinics passed to MJ.ejs:', clinics); // Debugging log
     res.render('MJ', { clinics });
   });
@@ -246,10 +211,6 @@ app.get('/saskatoon', (req, res) => {
         image: '/images/Cornerstone.jpg'
       }
     ];
-
-  
-    // Pass the clinics array to the Regina.ejs template
-    // console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
     res.render('Saskatoon', { clinics });
   });
 
