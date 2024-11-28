@@ -9,12 +9,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/styles.css">
-  <style>
-    .carousel-item img {
-      height: 400px;
-      object-fit: cover;
-    }
-  </style>
 </head>
 
 <body>
@@ -182,128 +176,128 @@
     </div>
   </footer>
   <!-- JavaScript -->
-   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const clinicNameInput = document.getElementById('clinicNameInput');
-    const dateInput = document.getElementById('appointmentDateInput');
-    const timeInput = document.getElementById('appointmentTimeInput');
-    const bookButtons = document.querySelectorAll('.book-appointment-btn');
-    const dateSelectionDiv = document.getElementById('dateSelection');
-    const timeSlotSelectionDiv = document.getElementById('timeSlotSelection');
-    const bookAppointmentForm = document.getElementById('bookAppointmentForm');
-  
-    // Handle clicking on "Book Appointment" buttons for each clinic
-    bookButtons.forEach(button => {
-      button.addEventListener('click', function () {
-        const clinicName = this.getAttribute('data-clinic');
-        clinicNameInput.value = clinicName;
-  
-        // Fetch available dates from the server
-        fetch(`/getAvailability?clinicName=${clinicName}`)
-          .then(response => response.json())
-          .then(data => {
-            if (data.dates) {
-              // Populate the date buttons
-              dateSelectionDiv.innerHTML = ''; // Clear existing buttons
-              data.dates.forEach(date => {
-                const dateButton = document.createElement('button');
-                dateButton.classList.add('btn', 'btn-outline-primary', 'm-2', 'date-button');
-                dateButton.textContent = new Date(date).toLocaleDateString();
-                dateButton.value = date;
-  
-                // Add click event to date button
-                dateButton.addEventListener('click', () => {
-                  dateInput.value = dateButton.value;
-  
-                  // Clear the existing time slots
-                  timeSlotSelectionDiv.innerHTML = '';
-  
-                  // Open the time slots accordion
-                  const timeCollapse = new bootstrap.Collapse('#collapseTime', {
-                    toggle: true
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const clinicNameInput = document.getElementById('clinicNameInput');
+      const dateInput = document.getElementById('appointmentDateInput');
+      const timeInput = document.getElementById('appointmentTimeInput');
+      const bookButtons = document.querySelectorAll('.book-appointment-btn');
+      const dateSelectionDiv = document.getElementById('dateSelection');
+      const timeSlotSelectionDiv = document.getElementById('timeSlotSelection');
+      const bookAppointmentForm = document.getElementById('bookAppointmentForm');
+    
+      // Handle clicking on "Book Appointment" buttons for each clinic
+      bookButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const clinicName = this.getAttribute('data-clinic');
+          clinicNameInput.value = clinicName;
+    
+          // Fetch available dates from the server
+          fetch(`/getAvailability?clinicName=${clinicName}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.dates) {
+                // Populate the date buttons
+                dateSelectionDiv.innerHTML = ''; // Clear existing buttons
+                data.dates.forEach(date => {
+                  const dateButton = document.createElement('button');
+                  dateButton.classList.add('btn', 'btn-outline-primary', 'm-2', 'date-button');
+                  dateButton.textContent = new Date(date).toLocaleDateString();
+                  dateButton.value = date;
+    
+                  // Add click event to date button
+                  dateButton.addEventListener('click', () => {
+                    dateInput.value = dateButton.value;
+    
+                    // Clear the existing time slots
+                    timeSlotSelectionDiv.innerHTML = '';
+    
+                    // Open the time slots accordion
+                    const timeCollapse = new bootstrap.Collapse('#collapseTime', {
+                      toggle: true
+                    });
+    
+                    // Populate the time slots for the selected date
+                    data.timeSlots.forEach(slot => {
+                      if (slot.date === dateButton.value) {
+                        const timeButton = document.createElement('button');
+                        timeButton.classList.add('btn', 'btn-outline-primary', 'm-2');
+                        timeButton.textContent = slot.time;
+                        timeButton.value = slot.time;
+                        timeButton.disabled = slot.isBooked; // Disable booked slots
+    
+                        // Add click event to time button
+                        timeButton.addEventListener('click', () => {
+                          timeInput.value = timeButton.value;
+                        });
+    
+                        timeSlotSelectionDiv.appendChild(timeButton);
+                      }
+                    });
                   });
-  
-                  // Populate the time slots for the selected date
-                  data.timeSlots.forEach(slot => {
-                    if (slot.date === dateButton.value) {
-                      const timeButton = document.createElement('button');
-                      timeButton.classList.add('btn', 'btn-outline-primary', 'm-2');
-                      timeButton.textContent = slot.time;
-                      timeButton.value = slot.time;
-                      timeButton.disabled = slot.isBooked; // Disable booked slots
-  
-                      // Add click event to time button
-                      timeButton.addEventListener('click', () => {
-                        timeInput.value = timeButton.value;
-                      });
-  
-                      timeSlotSelectionDiv.appendChild(timeButton);
-                    }
-                  });
+    
+                  dateSelectionDiv.appendChild(dateButton);
                 });
-  
-                dateSelectionDiv.appendChild(dateButton);
-              });
-            }
-          });
-  
-        // Show the modal for booking
-        const modal = new bootstrap.Modal(document.getElementById('bookAppointmentModal'));
-        modal.show();
+              }
+            });
+    
+          // Show the modal for booking
+          const modal = new bootstrap.Modal(document.getElementById('bookAppointmentModal'));
+          modal.show();
+        });
+      });
+    
+      // Validate form submission to ensure date and time are selected
+      bookAppointmentForm.addEventListener('submit', (e) => {
+        if (!dateInput.value || !timeInput.value) {
+          e.preventDefault();
+          alert('Please select both a date and a time slot before confirming your appointment.');
+        }
       });
     });
+    // document.addEventListener('DOMContentLoaded', () => {
+    //   const bookAppointmentForm = document.getElementById('bookAppointmentForm');
+      
+    //   if (bookAppointmentForm) {
+    //     bookAppointmentForm.addEventListener('submit', async (e) => {
+    //       e.preventDefault(); // Prevent the default form submission
   
-    // Validate form submission to ensure date and time are selected
-    bookAppointmentForm.addEventListener('submit', (e) => {
-      if (!dateInput.value || !timeInput.value) {
-        e.preventDefault();
-        alert('Please select both a date and a time slot before confirming your appointment.');
-      }
-    });
-  });
-  // document.addEventListener('DOMContentLoaded', () => {
-  //   const bookAppointmentForm = document.getElementById('bookAppointmentForm');
-    
-  //   if (bookAppointmentForm) {
-  //     bookAppointmentForm.addEventListener('submit', async (e) => {
-  //       e.preventDefault(); // Prevent the default form submission
-
-  //       const formData = new FormData(bookAppointmentForm);
-  //       const data = Object.fromEntries(formData.entries());
-
-  //       try {
-  //         const response = await fetch('/bookAppointment', {
-  //           method: 'POST',
-  //           headers: {
-  //             'Content-Type': 'application/json'
-  //           },
-  //           body: JSON.stringify(data)
-  //         });
-
-  //         const result = await response.json();
-
-  //         if (response.ok) {
-  //           // Redirect to MyAppointments if booking is successful
-  //           window.location.href = '/MyAppointments';
-  //         } else {
-  //           // Show the error message in the modal
-  //           showErrorModal(result.message);
-  //         }
-  //       } catch (error) {
-  //         console.error('Error submitting form:', error);
-  //         showErrorModal('An unexpected error occurred. Please try again later.');
-  //       }
-  //     });
-  //   }
-
-  //   // Function to display the error message modal
-  //   function showErrorModal(message) {
-  //     const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-  //     document.getElementById('errorModalMessage').textContent = message;
-  //     errorModal.show();
-  //   }
-  // });
-</script>
+    //       const formData = new FormData(bookAppointmentForm);
+    //       const data = Object.fromEntries(formData.entries());
+  
+    //       try {
+    //         const response = await fetch('/bookAppointment', {
+    //           method: 'POST',
+    //           headers: {
+    //             'Content-Type': 'application/json'
+    //           },
+    //           body: JSON.stringify(data)
+    //         });
+  
+    //         const result = await response.json();
+  
+    //         if (response.ok) {
+    //           // Redirect to MyAppointments if booking is successful
+    //           window.location.href = '/MyAppointments';
+    //         } else {
+    //           // Show the error message in the modal
+    //           showErrorModal(result.message);
+    //         }
+    //       } catch (error) {
+    //         console.error('Error submitting form:', error);
+    //         showErrorModal('An unexpected error occurred. Please try again later.');
+    //       }
+    //     });
+    //   }
+  
+    //   // Function to display the error message modal
+    //   function showErrorModal(message) {
+    //     const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    //     document.getElementById('errorModalMessage').textContent = message;
+    //     errorModal.show();
+    //   }
+    // });
+  </script>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

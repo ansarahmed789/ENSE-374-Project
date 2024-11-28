@@ -89,29 +89,24 @@ router.get('/getAvailability', async (req, res) => {
     try {
         const clinicName = req.query.clinicName;
 
-        // Debug: Ensure the clinicName is received
         console.log('Clinic name received for availability:', clinicName);
 
-        // Find the clinic by name
-        const clinic = await Clinic.findOne({ name: clinicName });
+        const clinic = await Clinic.findOne({ name: clinicName.trim() }); // Trim any extra spaces
         if (!clinic) {
             console.error('Clinic not found:', clinicName);
             return res.status(404).send({ success: false, message: 'Clinic not found' });
         }
 
-        // Fetch availability for the clinic using clinicId
         const availability = await Availability.find({ clinicId: clinic._id });
-
         if (!availability || availability.length === 0) {
             console.log('No availability found for clinic:', clinicName);
             return res.status(200).send({ success: true, dates: [], timeSlots: [] });
         }
 
-        // Structure response
-        const dates = availability.map(avail => avail.date);
+        const dates = availability.map(avail => avail.date.toISOString().split('T')[0]); // Ensure date is formatted correctly
         const timeSlots = availability.flatMap(avail =>
             avail.timeSlots.map(slot => ({
-                date: avail.date,
+                date: avail.date.toISOString().split('T')[0], // Match frontend format
                 time: slot.time,
                 isBooked: slot.isBooked
             }))
