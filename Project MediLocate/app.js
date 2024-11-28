@@ -252,6 +252,19 @@ app.get('/saskatoon', (req, res) => {
     // console.log('Clinics:', clinics); // Debugging output to make sure clinics is defined
     res.render('Saskatoon', { clinics });
   });
+
+  app.get('/addAvailability', async (req, res) => {
+    try {
+        // Fetch the list of clinics to display in the form
+        const clinics = await Clinic.find();
+
+        // Render the form for adding availability
+        res.render('addAvailability', { clinics });
+    } catch (error) {
+        console.error("Error rendering addAvailability page:", error);
+        res.status(500).send("Server error");
+    }
+});
   
 // Use routes from userController
 app.use("/", userRoutes)

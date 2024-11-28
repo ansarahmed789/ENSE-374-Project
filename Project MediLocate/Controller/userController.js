@@ -4,7 +4,6 @@ const path = require("path");
 const fs = require("fs");
 const passport = require("passport");
 const mongoose = require ("mongoose");
-const nodemailer = require("nodemailer");
 const Appointment = require("../Model/Appointment"); // Import Appointment model
 const User = require("../Model/userModel"); // Import the User model (adjust the path accordingly)
 const Availability = require('../Model/Availability');
@@ -205,6 +204,49 @@ router.get('/MyAppointments', async (req, res) => {
     }
 });
 
+router.post('/addAvailability', async (req, res) => {
+    try {
+      const { clinicName, date, timeSlots } = req.body;
+  
+      // Validate input
+      if (!clinicName || !date || !timeSlots || !Array.isArray(timeSlots)) {
+        return res.status(400).send({ success: false, message: 'Invalid input data.' });
+      }
+  
+      // Find the clinic by name
+      const clinic = await Clinic.findOne({ name: clinicName });
+      if (!clinic) {
+        return res.status(404).send({ success: false, message: 'Clinic not found.' });
+      }
+  
+      // Check if availability already exists for the date
+      let availability = await Availability.findOne({ clinicId: clinic._id, date: new Date(date) });
+  
+      if (availability) {
+        // Add new time slots to the existing availability
+        timeSlots.forEach(slot => {
+          if (!availability.timeSlots.some(existingSlot => existingSlot.time === slot)) {
+            availability.timeSlots.push({ time: slot, isBooked: false });
+          }
+        });
+      } else {
+        // Create new availability entry
+        availability = new Availability({
+          clinicId: clinic._id, // Use the unique clinic ID
+          date: new Date(date),
+          timeSlots: timeSlots.map(slot => ({ time: slot, isBooked: false })),
+        });
+      }
+  
+      // Save the availability
+      await availability.save();
+      res.status(200).send({ success: true, message: 'Availability added successfully.' });
+    } catch (error) {
+      console.error('Error adding availability:', error);
+      res.status(500).send({ success: false, message: 'Server error while adding availability.' });
+    }
+  });
+  
 
 router.get("/logout", (req, res) => {
     req.logout((err) => {
