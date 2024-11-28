@@ -13,6 +13,7 @@ MediLocate is a web-based application designed to revolutionize the way people b
 - [How It Works](#how-it-works)
 - [Technology Stack](#technology-stack)
 - [Installation](#installation)
+- [How to Run](#how-to-run)
 - [Usage](#usage)
 - [Architecture](#architecture)
 - [Creators](#creators)
@@ -83,6 +84,12 @@ To run MediLocate locally:
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-repo/MediLocate.git
+
+## How to Run
+
+1. ```bash
+node app.js
+
 
 ## Usage
 1. Sign Up and Log In
