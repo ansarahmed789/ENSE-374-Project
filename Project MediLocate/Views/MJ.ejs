@@ -15,7 +15,7 @@
    <!-- Header Section -->
    <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand d-flex align-items-center mx-auto" href="#">
+      <a class="navbar-brand d-flex align-items-center mx-auto" href="/Home">
         <img src="/images/image.png" alt="MediLocate Logo" class="logo me-3">
         <span class="display-5 fw-bold text-primary">MediLocate</span>
       </a>
@@ -111,7 +111,6 @@
                 </h2>
                 <div id="collapseDate" class="accordion-collapse collapse show" aria-labelledby="headingDate" data-bs-parent="#dateAccordion">
                   <div class="accordion-body" id="dateSelection">
-                    <!-- Dates will be dynamically inserted here -->
                   </div>
                 </div>
               </div>
@@ -127,7 +126,6 @@
                 </h2>
                 <div id="collapseTime" class="accordion-collapse collapse" aria-labelledby="headingTime" data-bs-parent="#timeAccordion">
                   <div class="accordion-body" id="timeSlotSelection">
-                    <!-- Time slots will be dynamically inserted here -->
                   </div>
                 </div>
               </div>
@@ -146,7 +144,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="errorModalMessage">
-        <!-- Error message will appear here -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -255,48 +252,6 @@
         }
       });
     });
-    // document.addEventListener('DOMContentLoaded', () => {
-    //   const bookAppointmentForm = document.getElementById('bookAppointmentForm');
-      
-    //   if (bookAppointmentForm) {
-    //     bookAppointmentForm.addEventListener('submit', async (e) => {
-    //       e.preventDefault(); // Prevent the default form submission
-  
-    //       const formData = new FormData(bookAppointmentForm);
-    //       const data = Object.fromEntries(formData.entries());
-  
-    //       try {
-    //         const response = await fetch('/bookAppointment', {
-    //           method: 'POST',
-    //           headers: {
-    //             'Content-Type': 'application/json'
-    //           },
-    //           body: JSON.stringify(data)
-    //         });
-  
-    //         const result = await response.json();
-  
-    //         if (response.ok) {
-    //           // Redirect to MyAppointments if booking is successful
-    //           window.location.href = '/MyAppointments';
-    //         } else {
-    //           // Show the error message in the modal
-    //           showErrorModal(result.message);
-    //         }
-    //       } catch (error) {
-    //         console.error('Error submitting form:', error);
-    //         showErrorModal('An unexpected error occurred. Please try again later.');
-    //       }
-    //     });
-    //   }
-  
-    //   // Function to display the error message modal
-    //   function showErrorModal(message) {
-    //     const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-    //     document.getElementById('errorModalMessage').textContent = message;
-    //     errorModal.show();
-    //   }
-    // });
   </script>
 
   <!-- Bootstrap JS -->
