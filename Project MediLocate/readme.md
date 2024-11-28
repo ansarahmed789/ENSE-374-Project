@@ -81,14 +81,15 @@ This project is an example of the combination of Software Engineering principles
 
 To run MediLocate locally:
 
-1. Clone the repository:
+1. Cloning
    ```bash
    git clone https://github.com/your-repo/MediLocate.git
 
 ## How to Run
 
-1. ```bash
-node app.js
+1. Clone the repository:
+   ```bash
+   node app.js
 
 
 ## Usage
