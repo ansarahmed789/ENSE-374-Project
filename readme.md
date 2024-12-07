@@ -63,7 +63,6 @@ The second solution involved integrating Google Maps API for visualizing clinic 
 
 ### Final Solution
 Our final solution categorizes clinics by cities, making it easier for users to browse clinics in Regina, Moose Jaw, and Saskatoon. This approach prioritizes simplicity, accessibility, and scalability.  
-[Learn more about our solutions](https://github.com/ansarahmed789/ENSE-374-Project/blob/main/Status%20Reports/Solution.pdf)
 
 ---
 
@@ -77,6 +76,8 @@ Our final solution categorizes clinics by cities, making it easier for users to 
 ## Project Management
 - **[Milestone-based Schedule](https://github.com/ansarahmed789/ENSE-374-Project/blob/main/Milestone-Based%20Schedule.pdf)**  
 - **[Gantt Chart](https://github.com/ansarahmed789/ENSE-374-Project/blob/main/Status%20Reports/Gantt%20Chart.pdf)**  
+- **[Lesson Learned Report](https://github.com/ansarahmed789/ENSE-374-Project/blob/main/Status%20Reports/Lesson%20Learned%20Report.md)**
+- **[Learn more about our solutions](https://github.com/ansarahmed789/ENSE-374-Project/blob/main/Status%20Reports/Solution.pdf)**
 
 ---
 
@@ -91,4 +92,3 @@ Our project successfully delivered a streamlined platform for clinic management 
 
 ## References
 All references follow the IEEE style.  
-[Lesson Learned Report](https://github.com/ansarahmed789/ENSE-374-Project/blob/main/Status%20Reports/Lesson%20Learned%20Report.md)
